@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.habibfr.mystoryapp.data.UserRepository
-import com.habibfr.mystoryapp.data.pref.UserModel
 import com.habibfr.mystoryapp.data.remote.response.RegisterResponse
 import kotlinx.coroutines.launch
 import com.habibfr.mystoryapp.data.Result

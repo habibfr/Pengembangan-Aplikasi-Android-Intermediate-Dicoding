@@ -2,6 +2,7 @@ package com.habibfr.mystoryapp.view.signup
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.habibfr.mystoryapp.view.ViewModelFactory
 import com.habibfr.mystoryapp.data.Result
 import com.habibfr.mystoryapp.databinding.ActivitySignupBinding
+import com.habibfr.mystoryapp.view.login.LoginActivity
 
 
 class SignupActivity : AppCompatActivity() {
@@ -119,7 +121,9 @@ class SignupActivity : AppCompatActivity() {
                             AlertDialog.Builder(this).apply {
                                 setTitle("Register User!")
                                 setMessage("Akun dengan $email sudah jadi nih. Yuk, login!.")
+
                                 setPositiveButton("Lanjut") { _, _ ->
+                                    startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
                                     finish()
                                 }
                                 create()

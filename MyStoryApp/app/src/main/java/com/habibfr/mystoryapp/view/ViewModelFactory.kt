@@ -8,6 +8,7 @@ import com.habibfr.mystoryapp.di.Injection
 import com.habibfr.mystoryapp.view.login.LoginViewModel
 import com.habibfr.mystoryapp.view.main.MainViewModel
 import com.habibfr.mystoryapp.view.signup.SignupViewModel
+import com.habibfr.mystoryapp.view.story.DetailViewModel
 
 class ViewModelFactory(private val repository: UserRepository) : ViewModelProvider.NewInstanceFactory() {
 
@@ -23,6 +24,9 @@ class ViewModelFactory(private val repository: UserRepository) : ViewModelProvid
 
             modelClass.isAssignableFrom(SignupViewModel::class.java) -> {
                 SignupViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
+                DetailViewModel(repository) as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
