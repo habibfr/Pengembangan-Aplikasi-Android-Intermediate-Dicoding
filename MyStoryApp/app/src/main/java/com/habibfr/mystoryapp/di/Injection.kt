@@ -4,10 +4,13 @@ import android.content.Context
 import com.habibfr.mystoryapp.data.UserRepository
 import com.habibfr.mystoryapp.data.pref.UserPreference
 import com.habibfr.mystoryapp.data.pref.dataStore
+import com.habibfr.mystoryapp.data.remote.retrofit.ApiConfig
 
 object Injection {
     fun provideRepository(context: Context): UserRepository {
         val pref = UserPreference.getInstance(context.dataStore)
-        return UserRepository.getInstance(pref)
+        val apiService = ApiConfig.getApiService()
+
+        return UserRepository.getInstance(pref, apiService)
     }
 }

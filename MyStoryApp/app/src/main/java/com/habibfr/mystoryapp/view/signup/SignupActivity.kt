@@ -9,17 +9,28 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.habibfr.mystoryapp.view.ViewModelFactory
+import com.habibfr.mystoryapp.data.Result
 import com.habibfr.mystoryapp.databinding.ActivitySignupBinding
+
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
+    private lateinit var factory: ViewModelFactory
+    private val viewModel: SignupViewModel by viewModels {
+        factory
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        factory = ViewModelFactory.getInstance(this)
 
         setupView()
         setupAction()
@@ -34,7 +45,8 @@ class SignupActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.toString().length < 8) {
-                    binding.passwordEditTextLayout.error = "Password tidak boleh kurang dari 8 karakter"
+                    binding.passwordEditTextLayout.error =
+                        "Password tidak boleh kurang dari 8 karakter"
                 } else {
                     binding.passwordEditTextLayout.error = null
                 }
@@ -71,8 +83,7 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        @Suppress("DEPRECATION")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        @Suppress("DEPRECATION") if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
         } else {
             window.setFlags(
@@ -85,16 +96,45 @@ class SignupActivity : AppCompatActivity() {
 
     private fun setupAction() {
         binding.signupButton.setOnClickListener {
-            val email = binding.emailEditText.text.toString()
 
-            AlertDialog.Builder(this).apply {
-                setTitle("Yeah!")
-                setMessage("Akun dengan $email sudah jadi nih. Yuk, login dan belajar coding.")
-                setPositiveButton("Lanjut") { _, _ ->
-                    finish()
+            val username = binding.nameEditText.text.toString()
+            val email = binding.emailEditText.text.toString()
+            val password = binding.passwordEditText.text.toString()
+
+            viewModel.register(username, email, password)
+
+            viewModel.registerStatus.observe(this) { result ->
+                if (result != null) {
+                    when (result) {
+                        is Result.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
+
+                        is Result.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                this, "Congratulations!, " + result.data.message, Toast.LENGTH_SHORT
+                            ).show()
+
+                            AlertDialog.Builder(this).apply {
+                                setTitle("Register User!")
+                                setMessage("Akun dengan $email sudah jadi nih. Yuk, login!.")
+                                setPositiveButton("Lanjut") { _, _ ->
+                                    finish()
+                                }
+                                create()
+                                show()
+                            }
+                        }
+
+                        is Result.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                this, result.error, Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 }
-                create()
-                show()
             }
         }
     }
