@@ -2,29 +2,22 @@ package com.habibfr.mystoryapp.view.posting
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.google.gson.Gson
+import androidx.appcompat.app.AppCompatActivity
 import com.habibfr.mystoryapp.R
 import com.habibfr.mystoryapp.data.Result
-import com.habibfr.mystoryapp.data.remote.retrofit.ApiConfig
 import com.habibfr.mystoryapp.databinding.ActivityPostingBinding
-import com.habibfr.mystoryapp.databinding.ActivityStoryBinding
 import com.habibfr.mystoryapp.view.ViewModelFactory
 import com.habibfr.mystoryapp.view.main.MainActivity
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.HttpException
 
 class PostingActivity : AppCompatActivity() {
 
@@ -57,14 +50,11 @@ class PostingActivity : AppCompatActivity() {
         if (uri != null) {
             currentImageUri = uri
             showImage()
-        } else {
-            Log.d("Photo Picker", "No media selected")
         }
     }
 
     private fun showImage() {
         currentImageUri?.let {
-            Log.d("Image URI", "showImage: $it")
             binding.previewImageView.setImageURI(it)
         }
     }
@@ -88,7 +78,6 @@ class PostingActivity : AppCompatActivity() {
     private fun uploadImage() {
         currentImageUri?.let { uri ->
             val imageFile = uriToFile(uri, this).reduceFileImage()
-            Log.d("Image File", "showImage: ${imageFile.path}")
             val description = binding.descriptionStory.text.toString()
             showLoading(true)
 
@@ -125,23 +114,6 @@ class PostingActivity : AppCompatActivity() {
                     }
                 }
             }
-
-
-//            finish()
-
-//            lifecycleScope.launch {
-//                try {
-//                    val apiService = ApiConfig.getApiService()
-//                    val successResponse = apiService.uploadImage(multipartBody, requestBody)
-//                    showToast(successResponse.message)
-//                    showLoading(false)
-//                } catch (e: HttpException) {
-//                    val errorBody = e.response()?.errorBody()?.string()
-//                    val errorResponse = Gson().fromJson(errorBody, FileUploadResponse::class.java)
-//                    showToast(errorResponse.message)
-//                    showLoading(false)
-//                }
-//            }
         } ?: showToast(getString(R.string.empty_image_warning))
     }
 

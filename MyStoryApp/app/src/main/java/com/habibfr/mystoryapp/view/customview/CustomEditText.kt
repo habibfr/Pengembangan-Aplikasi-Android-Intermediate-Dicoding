@@ -19,13 +19,10 @@ class CustomEditText @JvmOverloads constructor(
     private var clearButtonImage: Drawable
 
     init {
-        // Menginisialisasi gambar clear button
-        clearButtonImage = ContextCompat.getDrawable(context, R.drawable.ic_close_black_24) as Drawable
+        clearButtonImage =
+            ContextCompat.getDrawable(context, R.drawable.ic_close_black_24) as Drawable
 
-        // Menambahkan aksi kepada clear button
         setOnTouchListener(this)
-
-        // Menambahkan aksi ketika ada perubahan text akan memunculkan clear button
         addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // Do nothing.
@@ -43,28 +40,29 @@ class CustomEditText @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        // Menambahkan hint pada editText
-//        hint = "Masukkan nama Anda"
-
-        // Menambahkan text aligmnet pada editText
         textAlignment = View.TEXT_ALIGNMENT_VIEW_START
     }
 
-    // Menampilkan clear button
     private fun showClearButton() {
         setButtonDrawables(endOfTheText = clearButtonImage)
     }
 
-    // Menghilangkan clear button
     private fun hideClearButton() {
         setButtonDrawables()
     }
 
-    //Mengkonfigurasi button
-    private fun setButtonDrawables(startOfTheText: Drawable? = null, topOfTheText:Drawable? = null, endOfTheText:Drawable? = null, bottomOfTheText: Drawable? = null){
-        // Sets the Drawables (if any) to appear to the left of,
-        // above, to the right of, and below the text.
-        setCompoundDrawablesWithIntrinsicBounds(startOfTheText, topOfTheText, endOfTheText, bottomOfTheText)
+    private fun setButtonDrawables(
+        startOfTheText: Drawable? = null,
+        topOfTheText: Drawable? = null,
+        endOfTheText: Drawable? = null,
+        bottomOfTheText: Drawable? = null
+    ) {
+        setCompoundDrawablesWithIntrinsicBounds(
+            startOfTheText,
+            topOfTheText,
+            endOfTheText,
+            bottomOfTheText
+        )
     }
 
     override fun onTouch(v: View?, event: MotionEvent): Boolean {
@@ -87,18 +85,26 @@ class CustomEditText @JvmOverloads constructor(
             if (isClearButtonClicked) {
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        clearButtonImage = ContextCompat.getDrawable(context, R.drawable.ic_close_black_24) as Drawable
+                        clearButtonImage = ContextCompat.getDrawable(
+                            context,
+                            R.drawable.ic_close_black_24
+                        ) as Drawable
                         showClearButton()
                         return true
                     }
+
                     MotionEvent.ACTION_UP -> {
-                        clearButtonImage = ContextCompat.getDrawable(context, R.drawable.ic_close_black_24) as Drawable
+                        clearButtonImage = ContextCompat.getDrawable(
+                            context,
+                            R.drawable.ic_close_black_24
+                        ) as Drawable
                         when {
                             text != null -> text?.clear()
                         }
                         hideClearButton()
                         return true
                     }
+
                     else -> return false
                 }
             } else return false

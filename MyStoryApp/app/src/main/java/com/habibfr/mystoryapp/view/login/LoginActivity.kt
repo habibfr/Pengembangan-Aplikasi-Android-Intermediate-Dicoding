@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.habibfr.mystoryapp.R
 import com.habibfr.mystoryapp.data.Result
 import com.habibfr.mystoryapp.data.pref.UserModel
 import com.habibfr.mystoryapp.databinding.ActivityLoginBinding
@@ -45,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.toString().length < 8) {
                     binding.passwordEditTextLayout.error =
-                        "Password tidak boleh kurang dari 8 karakter"
+                        getString(R.string.error_pw)
                 } else {
                     binding.passwordEditTextLayout.error = null
                 }
@@ -64,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
                 if (!s.toString().trim().matches(Regex(emailPattern))) {
-                    binding.emailEditTextLayout.error = "Email tidak valid"
+                    binding.emailEditTextLayout.error = getString(R.string.error_email)
                 } else {
                     binding.emailEditTextLayout.error = null
                 }
@@ -99,20 +100,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupAction() {
         binding.loginButton.setOnClickListener {
-//            val email = binding.emailEditText.text.toString()
-//            viewModel.saveSession(UserModel(email, "sample_token"))
-//            AlertDialog.Builder(this).apply {
-//                setTitle("Yeah!")
-//                setMessage("Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
-//                setPositiveButton("Lanjut") { _, _ ->
-//                    val intent = Intent(context, MainActivity::class.java)
-//                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//                    startActivity(intent)
-//                    finish()
-//                }
-//                create()
-//                show()
-//            }
 
             val email = binding.emailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
@@ -135,13 +122,10 @@ class LoginActivity : AppCompatActivity() {
                                 )
                             }?.let { it2 -> loginViewModel.saveSession(it2) }
 
-                            startActivity(
-                                Intent(
-                                    this@LoginActivity,
-                                    MainActivity::class.java
-                                )
-                            )
-                            finish()
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
                         }
 
                         is Result.Error -> {
@@ -157,11 +141,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun playAnimation() {
-        ObjectAnimator.ofFloat(binding.imageView, View.TRANSLATION_X, -30f, 30f).apply {
-            duration = 6000
-            repeatCount = ObjectAnimator.INFINITE
-            repeatMode = ObjectAnimator.REVERSE
-        }.start()
 
         val title = ObjectAnimator.ofFloat(binding.titleTextView, View.ALPHA, 1f).setDuration(100)
         val message =

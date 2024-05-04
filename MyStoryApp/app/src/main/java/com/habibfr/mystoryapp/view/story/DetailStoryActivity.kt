@@ -18,7 +18,7 @@ import com.habibfr.mystoryapp.view.main.MainActivity
 
 class DetailStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailStoryBinding
-    private val detailViewModel by viewModels<DetailViewModel>{
+    private val detailViewModel by viewModels<DetailViewModel> {
         ViewModelFactory.getInstance(this)
     }
 
@@ -32,7 +32,7 @@ class DetailStoryActivity : AppCompatActivity() {
         binding = ActivityDetailStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.title = "Detail Story"
+        supportActionBar?.title = getString(R.string.detail_story)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val storyId = intent.getStringExtra(STORY_ID)

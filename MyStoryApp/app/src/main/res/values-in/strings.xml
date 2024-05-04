@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Aplikasi Story</string>
+    <string name="signup">Daftar</string>
+    <string name="login">Masuk</string>
+    <string name="message_welcome_page">Tulis, Posting, dan Edit kreasi Anda. Bebaskan pendongeng batin Anda! Selamat datang di aplikasi cerita tempat Anda dapat menulis, memposting, dan mengedit karya agung Anda.</string>
+    <string name="title_welcome_page">Selamat datang di aplikasi story!</string>
+    <string name="title_signup_page">Lengkapi data Anda di bawah!</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="message_login_page">Masukkan data Anda terlebih dahulu!</string>
+    <string name="title_login_page">Siap berbagi cerita Anda dengan dunia? Selamat datang di aplikasi favorit baru Anda!</string>
+    <string name="name">Name</string>
+    <string name="message_main_page">Selamat datang di aplikasi Story!</string>
+    <string name="greeting">Halo %1$s,</string>
+    <string name="logout">Keluar</string>
+    <string name="judul_story">Judul Cerita</string>
+    <string name="deskripsi_story">Deskripsi Cerita</string>
+    <string name="galeri">Galeri</string>
+    <string name="kamera">Kamera</string>
+    <string name="upload">Unggah</string>
+    <string name="empty_image_warning">Gambar Kosong</string>
+    <string name="error_pw">Password tidak boleh kurang dari 8 karakter</string>
+    <string name="error_email">Email tidak valid</string>
+    <string name="msg_alert">Apakah kamu yakin ingin keluar?</string>
+    <string name="next">Lanjut</string>
+    <string name="congratulations">"Selamat!, "</string>
+    <string name="succes_signup">" Akun anda sudah jadi nih. Yuk, login!."</string>
+    <string name="register_user_susccessfully">Pendaftaran User</string>
+    <string name="detail_story">Detail Story</string>
+    <string name="language">Bahasa</string>
+</resources>

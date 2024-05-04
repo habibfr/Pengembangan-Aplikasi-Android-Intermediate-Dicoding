@@ -7,7 +7,18 @@
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowEnterTransition">@android:transition/explode</item>
         <item name="android:windowExitTransition">@android:transition/explode</item>
+        <item name="android:fontFamily">@font/poppins_reguler</item>
+        <item name="colorPrimary">@color/navy</item>
+        <item name="colorSecondary">@color/purple</item>
+        <item name="colorTertiary">@color/navy</item>
+        <item name="android:colorBackground">@color/grey</item>
     </style>
 
-    <style name="Theme.MyStoryApp" parent="Base.Theme.MyStoryApp" />
+    <style name="Theme.MyStoryApp" parent="Base.Theme.MyStoryApp" >
+        <item name="android:fontFamily">@font/poppins_reguler</item>
+        <item name="colorPrimary">@color/navy</item>
+        <item name="colorSecondary">@color/purple</item>
+        <item name="colorTertiary">@color/navy</item>
+        <item name="android:colorBackground">@color/grey</item>
+    </style>
 </resources>

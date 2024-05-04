@@ -14,9 +14,10 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.habibfr.mystoryapp.view.ViewModelFactory
+import com.habibfr.mystoryapp.R
 import com.habibfr.mystoryapp.data.Result
 import com.habibfr.mystoryapp.databinding.ActivitySignupBinding
+import com.habibfr.mystoryapp.view.ViewModelFactory
 import com.habibfr.mystoryapp.view.login.LoginActivity
 
 
@@ -48,7 +49,7 @@ class SignupActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.toString().length < 8) {
                     binding.passwordEditTextLayout.error =
-                        "Password tidak boleh kurang dari 8 karakter"
+                        getString(R.string.error_pw)
                 } else {
                     binding.passwordEditTextLayout.error = null
                 }
@@ -65,7 +66,7 @@ class SignupActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
                 if (!s.toString().trim().matches(Regex(emailPattern))) {
-                    binding.emailEditTextLayout.error = "Email tidak valid"
+                    binding.emailEditTextLayout.error = getString(R.string.error_email)
                 } else {
                     binding.emailEditTextLayout.error = null
                     setMyButtonEnable()
@@ -115,15 +116,22 @@ class SignupActivity : AppCompatActivity() {
                         is Result.Success -> {
                             binding.progressBar.visibility = View.GONE
                             Toast.makeText(
-                                this, "Congratulations!, " + result.data.message, Toast.LENGTH_SHORT
+                                this,
+                                getString(R.string.congratulations) + result.data.message,
+                                Toast.LENGTH_SHORT
                             ).show()
 
                             AlertDialog.Builder(this).apply {
-                                setTitle("Register User!")
-                                setMessage("Akun dengan $email sudah jadi nih. Yuk, login!.")
+                                setTitle(getString(R.string.register_user_susccessfully))
+                                setMessage(getString(R.string.congratulations) + getString(R.string.succes_signup))
 
-                                setPositiveButton("Lanjut") { _, _ ->
-                                    startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
+                                setPositiveButton(getString(R.string.next)) { _, _ ->
+                                    startActivity(
+                                        Intent(
+                                            this@SignupActivity,
+                                            LoginActivity::class.java
+                                        )
+                                    )
                                     finish()
                                 }
                                 create()
