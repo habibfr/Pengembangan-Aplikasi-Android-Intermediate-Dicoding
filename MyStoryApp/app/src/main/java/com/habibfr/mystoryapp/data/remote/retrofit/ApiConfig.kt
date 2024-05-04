@@ -18,7 +18,7 @@ object ApiConfig {
         }
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(authInterceptor)
+//            .addInterceptor(authInterceptor)
             .build()
 
         val retrofit = Retrofit.Builder()

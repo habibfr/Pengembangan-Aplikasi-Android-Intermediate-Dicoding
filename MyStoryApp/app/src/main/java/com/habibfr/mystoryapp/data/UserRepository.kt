@@ -7,12 +7,17 @@ import com.habibfr.mystoryapp.data.pref.UserModel
 import com.habibfr.mystoryapp.data.pref.UserPreference
 import com.habibfr.mystoryapp.data.remote.response.DetailStoryResponse
 import com.habibfr.mystoryapp.data.remote.response.ErrorResponse
+import com.habibfr.mystoryapp.data.remote.response.FileUploadResponse
 import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
 import com.habibfr.mystoryapp.data.remote.response.LoginResult
 import com.habibfr.mystoryapp.data.remote.response.RegisterResponse
 import com.habibfr.mystoryapp.data.remote.retrofit.ApiService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.HttpException
+import retrofit2.http.Part
 
 class UserRepository private constructor(
     private val userPreference: UserPreference,
@@ -30,6 +35,9 @@ class UserRepository private constructor(
 
     private val _detailStory = MutableLiveData<Result<DetailStoryResponse>>()
     val detailStory: LiveData<Result<DetailStoryResponse>> = _detailStory
+
+    private val _postStatus = MutableLiveData<Result<FileUploadResponse>>()
+    val postStatus: LiveData<Result<FileUploadResponse>> = _postStatus
 
     suspend fun register(name: String, email: String, password: String) {
         _registerStatus.value = Result.Loading
@@ -59,9 +67,11 @@ class UserRepository private constructor(
 
 
     suspend fun getStory() {
+
         _story.value = Result.Loading
         try {
-            val response = apiService.getStories()
+            val response =
+                apiService.getStories("Bearer ${userPreference.getSession().first().token}")
             _story.value = Result.Success(response.listStory)
         } catch (e: HttpException) {
             val jsonInString = e.response()?.errorBody()?.string()
@@ -69,13 +79,15 @@ class UserRepository private constructor(
             val errorMessage = errorBody.message
             _story.value = Result.Error(errorMessage ?: "An error occurred")
         }
+
     }
 
 
     suspend fun getStoryById(id: String) {
         _detailStory.value = Result.Loading
         try {
-            val response = apiService.getStoryById(id)
+            val response =
+                apiService.getStoryById("Bearer ${userPreference.getSession().first().token}", id)
             _detailStory.value = Result.Success(response)
         } catch (e: HttpException) {
             val jsonInString = e.response()?.errorBody()?.string()
@@ -85,6 +97,19 @@ class UserRepository private constructor(
         }
     }
 
+    suspend fun postStory(file: MultipartBody.Part, description: RequestBody) {
+        _postStatus.value = Result.Loading
+        try {
+            val response =
+                apiService.uploadStory("Bearer ${userPreference.getSession().first().token}", file, description)
+            _postStatus.value = Result.Success(response)
+        } catch (e: HttpException) {
+            val jsonInString = e.response()?.errorBody()?.string()
+            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+            val errorMessage = errorBody.message
+            _postStatus.value = Result.Error(errorMessage ?: "An error occurred")
+        }
+    }
 
     suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)

@@ -7,6 +7,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -29,6 +32,7 @@ import com.habibfr.mystoryapp.view.story.DetailStoryActivity
 import com.habibfr.mystoryapp.view.story.DetailViewModel
 import com.habibfr.mystoryapp.view.welcome.WelcomeActivity
 import androidx.core.util.Pair
+import com.habibfr.mystoryapp.view.posting.PostingActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,47 +40,63 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by viewModels<MainViewModel> {
         ViewModelFactory.getInstance(this)
     }
+    private val storyAdapter = StoryAdapter()
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.top_app_bar, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.profil -> {
+                Toast.makeText(this, "profil", Toast.LENGTH_SHORT).show()
+                return true
+            }
+
+            R.id.language -> {
+                startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+                return true
+            }
+
+            R.id.logout -> {
+                logout()
+                return true
+            }
+
+            else -> return false
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getStory()
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.profil -> {
-                    // Handle edit text press
-                    Toast.makeText(this, "profil", Toast.LENGTH_SHORT).show()
-                    true
-                }
+        val layoutManager = LinearLayoutManager(this)
+        binding.rvStory.layoutManager = layoutManager
 
-                R.id.language -> {
-                    // Handle favorite icon press
-                    startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
-                    true
-                }
-
-                R.id.logout -> {
-                    // Handle more item (inside overflow menu) press
-                    logout()
-                    true
-                }
-
-                else -> false
-            }
-        }
+        val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
+        binding.rvStory.addItemDecoration(itemDecoration)
+//        binding.rvStory.adapter = storyAdapter
 
         viewModel.getSession().observe(this) { user ->
+            Log.d("TOKEN", user.token)
+
             if (!user.isLogin) {
                 startActivity(Intent(this, WelcomeActivity::class.java))
                 finish()
             }
         }
 
-        setupView()
-//        setupAction()
-        //        playAnimation()
-
+        viewModel.getStory()
         viewModel.story.observe(this) { result ->
             if (result != null) {
                 when (result) {
@@ -86,15 +106,8 @@ class MainActivity : AppCompatActivity() {
 
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
-
-                        val layoutManager = LinearLayoutManager(this)
-                        binding.rvStory.layoutManager = layoutManager
-
-                        val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
-                        binding.rvStory.addItemDecoration(itemDecoration)
-                        binding.rvStory.setHasFixedSize(true);
-
                         setStory(result.data)
+                        Log.d("DATA", "DSD" + result.data.size)
                     }
 
                     is Result.Error -> {
@@ -108,18 +121,18 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+//        setupView()
+//        setupAction()
+        //        playAnimation()
+
+
+        binding.fabAdd.setOnClickListener {
+            val intent = Intent(this@MainActivity, PostingActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setStory(story: List<ListStoryItem>) {
-        val storyAdapter = StoryAdapter()
-
-//        if (userFollower?.isEmpty() == true) {
-//            binding.tvFollowerKosong.visibility = View.VISIBLE
-//        } else {
-//            binding.tvFollowerKosong.visibility = View.GONE
-//        }
-
-
         storyAdapter.submitList(story)
         binding.rvStory.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)

@@ -22,10 +22,18 @@ class DetailStoryActivity : AppCompatActivity() {
         ViewModelFactory.getInstance(this)
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        supportActionBar?.title = "Detail Story"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val storyId = intent.getStringExtra(STORY_ID)
         if (storyId != null) {

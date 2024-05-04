@@ -15,4 +15,8 @@
     <string name="logout">Keluar</string>
     <string name="judul_story">Judul Story</string>
     <string name="deskripsi_story">Deskripsi Story</string>
+    <string name="galeri">Galeri</string>
+    <string name="kamera">Kamera</string>
+    <string name="upload">Upload</string>
+    <string name="empty_image_warning">image emtpy</string>
 </resources>
