@@ -104,4 +104,7 @@ dependencies {
 
     implementation("androidx.test.espresso:espresso-idling-resource:3.4.0")
 
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.4.0")//IntentsTestRule
+
+
 }
