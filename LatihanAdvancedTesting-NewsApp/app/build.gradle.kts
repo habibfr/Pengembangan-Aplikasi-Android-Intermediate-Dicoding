@@ -40,6 +40,9 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 dependencies {
@@ -90,5 +93,15 @@ dependencies {
     androidTestImplementation("androidx.arch.core:core-testing:2.1.0") // InstantTaskExecutorRule
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4") //TestDispatcher
 
+    //TestCoroutineDispatcher
+    debugImplementation("androidx.fragment:fragment-testing:1.4.1") //launchFragmentInContainer
+
+    //mock web server
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
+    androidTestImplementation("com.squareup.okhttp3:okhttp-tls:4.9.3")
+
+    androidTestImplementation("com.android.support.test.espresso:espresso-contrib:3.0.2") //RecyclerViewActions
+
+    implementation("androidx.test.espresso:espresso-idling-resource:3.4.0")
 
 }
