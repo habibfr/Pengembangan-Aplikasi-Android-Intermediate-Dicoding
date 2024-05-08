@@ -2,7 +2,7 @@ package com.dicoding.newsapp.ui.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.dicoding.newsapp.DataDummy
+import com.dicoding.newsapp.utils.DataDummy
 import com.dicoding.newsapp.data.NewsRepository
 import com.dicoding.newsapp.utils.MainDispatcherRule
 import com.dicoding.newsapp.utils.getOrAwaitValue
