@@ -66,6 +66,8 @@ class MainActivity : AppCompatActivity() {
         binding.rvStudent.adapter = adapter
         mainViewModel.getAllStudent().observe(this) {
             adapter.submitList(it)
+            it.forEach(::println)
+
         }
     }
 
