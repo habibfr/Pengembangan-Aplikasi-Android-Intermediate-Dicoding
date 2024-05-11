@@ -1,15 +1,12 @@
 package com.habibfr.mystoryapp.view.main
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowInsets
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -23,6 +20,7 @@ import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
 import com.habibfr.mystoryapp.databinding.ActivityMainBinding
 import com.habibfr.mystoryapp.view.ViewModelFactory
 import com.habibfr.mystoryapp.view.adapter.StoryAdapter
+import com.habibfr.mystoryapp.view.maps.MapsActivity
 import com.habibfr.mystoryapp.view.posting.PostingActivity
 import com.habibfr.mystoryapp.view.story.DetailStoryActivity
 import com.habibfr.mystoryapp.view.welcome.WelcomeActivity
@@ -48,8 +46,14 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
+
             R.id.logout -> {
                 logout()
+                true
+            }
+
+            R.id.maps -> {
+                goMap()
                 true
             }
 
@@ -135,6 +139,11 @@ class MainActivity : AppCompatActivity() {
 
 
         startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle())
+    }
+
+    private fun goMap() {
+        val intent = Intent(this, MapsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun logout() {

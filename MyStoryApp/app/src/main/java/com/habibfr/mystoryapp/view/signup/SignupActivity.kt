@@ -42,23 +42,11 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun setupInput() {
-        binding.passwordEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-            }
+        setMyButtonEnable()
 
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.toString().length < 8) {
-                    binding.passwordEditTextLayout.error =
-                        getString(R.string.error_pw)
-                } else {
-                    binding.passwordEditTextLayout.error = null
-                }
-                setMyButtonEnable()
-            }
+        binding.passwordEditText.setTextInputLayout(binding.passwordEditTextLayout)
+        binding.passwordEditText.setButton(binding.signupButton)
 
-            override fun afterTextChanged(s: Editable) {
-            }
-        })
 
         binding.emailEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -80,9 +68,9 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun setMyButtonEnable() {
+        val passValid = binding.passwordEditText.getButtonIsValid()
         val isEmailValid = binding.emailEditTextLayout.error == null
-        val isPasswordValid = binding.passwordEditText.text.toString().length >= 8
-        binding.signupButton.isEnabled = isEmailValid && isPasswordValid
+        binding.signupButton.isEnabled = isEmailValid && passValid
     }
 
     private fun setupView() {
@@ -152,7 +140,7 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun playAnimation() {
-        ObjectAnimator.ofFloat(binding.imageView, View.TRANSLATION_X, -30f, 30f).apply {
+        ObjectAnimator.ofFloat(binding.imageView, View.TRANSLATION_X, -90f, 90f).apply {
             duration = 6000
             repeatCount = ObjectAnimator.INFINITE
             repeatMode = ObjectAnimator.REVERSE

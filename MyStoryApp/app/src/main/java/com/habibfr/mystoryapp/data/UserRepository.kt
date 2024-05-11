@@ -33,6 +33,9 @@ class UserRepository private constructor(
     private val _story = MutableLiveData<Result<List<ListStoryItem>>>()
     val story: LiveData<Result<List<ListStoryItem>>> = _story
 
+    private val _storyLocation = MutableLiveData<Result<List<ListStoryItem>>>()
+    val storyLocation: LiveData<Result<List<ListStoryItem>>> = _storyLocation
+
     private val _detailStory = MutableLiveData<Result<DetailStoryResponse>>()
     val detailStory: LiveData<Result<DetailStoryResponse>> = _detailStory
 
@@ -83,6 +86,22 @@ class UserRepository private constructor(
     }
 
 
+    suspend fun getStoryWithLocation() {
+        _storyLocation.value = Result.Loading
+        try {
+            val response =
+                apiService.getStoriesWithLocation("Bearer ${userPreference.getSession().first().token}")
+            _storyLocation.value = Result.Success(response.listStory)
+        } catch (e: HttpException) {
+            val jsonInString = e.response()?.errorBody()?.string()
+            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+            val errorMessage = errorBody.message
+            _story.value = Result.Error(errorMessage ?: "An error occurred")
+        }
+
+    }
+
+
     suspend fun getStoryById(id: String) {
         _detailStory.value = Result.Loading
         try {
@@ -101,7 +120,11 @@ class UserRepository private constructor(
         _postStatus.value = Result.Loading
         try {
             val response =
-                apiService.uploadStory("Bearer ${userPreference.getSession().first().token}", file, description)
+                apiService.uploadStory(
+                    "Bearer ${userPreference.getSession().first().token}",
+                    file,
+                    description
+                )
             _postStatus.value = Result.Success(response)
         } catch (e: HttpException) {
             val jsonInString = e.response()?.errorBody()?.string()
@@ -110,6 +133,7 @@ class UserRepository private constructor(
             _postStatus.value = Result.Error(errorMessage ?: "An error occurred")
         }
     }
+
 
     suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)

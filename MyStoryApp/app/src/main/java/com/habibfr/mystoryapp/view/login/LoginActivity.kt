@@ -12,7 +12,6 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.habibfr.mystoryapp.R
 import com.habibfr.mystoryapp.data.Result
@@ -39,25 +38,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupInput() {
-        binding.passwordEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-            }
+        setMyButtonEnable()
 
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.toString().length < 8) {
-                    binding.passwordEditTextLayout.error =
-                        getString(R.string.error_pw)
-                } else {
-                    binding.passwordEditTextLayout.error = null
-                }
-
-                setMyButtonEnable()
-            }
-
-
-            override fun afterTextChanged(s: Editable) {
-            }
-        })
+        binding.passwordEditText.setTextInputLayout(binding.passwordEditTextLayout)
+        binding.passwordEditText.setButton(binding.loginButton)
 
         binding.emailEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -81,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setMyButtonEnable() {
         val isEmailValid = binding.emailEditTextLayout.error == null
-        val isPasswordValid = binding.passwordEditText.text.toString().length >= 8
+        val isPasswordValid = binding.passwordEditText.getButtonIsValid()
         binding.loginButton.isEnabled = isEmailValid && isPasswordValid
     }
 
@@ -117,7 +101,8 @@ class LoginActivity : AppCompatActivity() {
                             binding.progressBar.visibility = View.GONE
 
                             result.data.token?.let { it1 ->
-                                UserModel(email,
+                                UserModel(
+                                    email,
                                     it1
                                 )
                             }?.let { it2 -> loginViewModel.saveSession(it2) }
