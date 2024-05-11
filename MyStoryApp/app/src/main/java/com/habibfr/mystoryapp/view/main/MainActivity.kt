@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -15,9 +14,9 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.habibfr.mystoryapp.R
-import com.habibfr.mystoryapp.data.Result
 import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
 import com.habibfr.mystoryapp.databinding.ActivityMainBinding
+import com.habibfr.mystoryapp.paging.LoadingStateAdapter
 import com.habibfr.mystoryapp.view.ViewModelFactory
 import com.habibfr.mystoryapp.view.adapter.StoryAdapter
 import com.habibfr.mystoryapp.view.maps.MapsActivity
@@ -61,12 +60,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getStory()
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -77,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
         val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
         binding.rvStory.addItemDecoration(itemDecoration)
-//        binding.rvStory.adapter = storyAdapter
+        binding.rvStory.layoutManager = LinearLayoutManager(this)
 
         viewModel.getSession().observe(this) { user ->
             Log.d("TOKEN", user.token)
@@ -88,44 +81,28 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.getStory()
-        viewModel.story.observe(this) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        setStory(result.data)
-                    }
-
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(
-                            this, result.error, Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-        }
-
+        binding.progressBar.visibility = View.VISIBLE
+        getStory()
         binding.fabAdd.setOnClickListener {
             val intent = Intent(this@MainActivity, PostingActivity::class.java)
             startActivity(intent)
         }
     }
 
-    private fun setStory(story: List<ListStoryItem>) {
-        storyAdapter.submitList(story)
-        binding.rvStory.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = storyAdapter
+    private fun getStory() {
+
+        binding.rvStory.adapter = storyAdapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                storyAdapter.retry()
+            }
+        )
+
+        viewModel.story.observe(this) {
+            binding.progressBar.visibility = View.GONE
+            storyAdapter.submitData(lifecycle, it)
         }
 
         storyAdapter.setOnItemClickCallback(object : StoryAdapter.OnItemClickCallback {
-
             override fun onItemClicked(storyItem: ListStoryItem) {
                 showSelectedUser(storyItem)
             }

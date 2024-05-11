@@ -2,6 +2,10 @@ package com.habibfr.mystoryapp.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.google.gson.Gson
 import com.habibfr.mystoryapp.data.pref.UserModel
 import com.habibfr.mystoryapp.data.pref.UserPreference
@@ -12,6 +16,7 @@ import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
 import com.habibfr.mystoryapp.data.remote.response.LoginResult
 import com.habibfr.mystoryapp.data.remote.response.RegisterResponse
 import com.habibfr.mystoryapp.data.remote.retrofit.ApiService
+import com.habibfr.mystoryapp.paging.QuotePagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import okhttp3.MultipartBody
@@ -30,8 +35,8 @@ class UserRepository private constructor(
     private val _dataUser = MutableLiveData<Result<LoginResult>>()
     val dataUser: LiveData<Result<LoginResult>> = _dataUser
 
-    private val _story = MutableLiveData<Result<List<ListStoryItem>>>()
-    val story: LiveData<Result<List<ListStoryItem>>> = _story
+//    private val _story = MutableLiveData<Result<List<ListStoryItem>>>()
+//    val story: LiveData<Result<List<ListStoryItem>>> = _story
 
     private val _storyLocation = MutableLiveData<Result<List<ListStoryItem>>>()
     val storyLocation: LiveData<Result<List<ListStoryItem>>> = _storyLocation
@@ -68,35 +73,61 @@ class UserRepository private constructor(
         }
     }
 
+    fun getStory(): LiveData<PagingData<ListStoryItem>> {
+//
+//        try {
+//            val response =
+//                apiService.getStories("Bearer ${userPreference.getSession().first().token}")
+//            _story.value = Result.Success(response.listStory)
+//        } catch (e: HttpException) {
+//            val jsonInString = e.response()?.errorBody()?.string()
+//            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+//            val errorMessage = errorBody.message
+//            _story.value = Result.Error(errorMessage ?: "An error occurred")
+//        }
 
-    suspend fun getStory() {
-
-        _story.value = Result.Loading
-        try {
-            val response =
-                apiService.getStories("Bearer ${userPreference.getSession().first().token}")
-            _story.value = Result.Success(response.listStory)
-        } catch (e: HttpException) {
-            val jsonInString = e.response()?.errorBody()?.string()
-            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
-            val errorMessage = errorBody.message
-            _story.value = Result.Error(errorMessage ?: "An error occurred")
-        }
-
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            pagingSourceFactory = {
+                QuotePagingSource(userPreference, apiService)
+            }
+        ).liveData
     }
+
+//    suspend fun getStory() {
+//
+//        _story.value = Result.Loading
+//        try {
+//            val response =
+//                apiService.getStories("Bearer ${userPreference.getSession().first().token}")
+//            _story.value = Result.Success(response.listStory)
+//        } catch (e: HttpException) {
+//            val jsonInString = e.response()?.errorBody()?.string()
+//            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+//            val errorMessage = errorBody.message
+//            _story.value = Result.Error(errorMessage ?: "An error occurred")
+//        }
+//
+//    }
 
 
     suspend fun getStoryWithLocation() {
         _storyLocation.value = Result.Loading
         try {
             val response =
-                apiService.getStoriesWithLocation("Bearer ${userPreference.getSession().first().token}")
+                apiService.getStoriesWithLocation(
+                    "Bearer ${
+                        userPreference.getSession().first().token
+                    }"
+                )
             _storyLocation.value = Result.Success(response.listStory)
         } catch (e: HttpException) {
             val jsonInString = e.response()?.errorBody()?.string()
             val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
             val errorMessage = errorBody.message
-            _story.value = Result.Error(errorMessage ?: "An error occurred")
+            _storyLocation.value = Result.Error(errorMessage ?: "An error occurred")
         }
 
     }

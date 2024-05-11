@@ -2,15 +2,16 @@ package com.habibfr.mystoryapp.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
 import com.habibfr.mystoryapp.databinding.ItemStoryBinding
 
 
-class StoryAdapter : ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
+class StoryAdapter :
+    PagingDataAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
     private lateinit var onItemClickCallback: OnItemClickCallback
 
     class MyViewHolder(val binding: ItemStoryBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -44,11 +45,15 @@ class StoryAdapter : ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val storyItem = getItem(position)
-        holder.itemView.setOnClickListener { onItemClickCallback.onItemClicked(storyItem) }
+        holder.itemView.setOnClickListener {
+            if (storyItem != null) {
+                onItemClickCallback.onItemClicked(storyItem)
+            }
+        }
 
-
-
-        holder.bind(storyItem)
+        if (storyItem != null) {
+            holder.bind(storyItem)
+        }
     }
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
