@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ListUpdateCallback
 import com.habibfr.mystoryapp.DataDummy
 import com.habibfr.mystoryapp.MainDispatcherRule
 import com.habibfr.mystoryapp.data.UserRepository
-import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
+import com.habibfr.mystoryapp.data.entity.ListStoryItem
 import com.habibfr.mystoryapp.getOrAwaitValue
 import com.habibfr.mystoryapp.view.adapter.StoryAdapter
 import kotlinx.coroutines.Dispatchers

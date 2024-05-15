@@ -46,14 +46,18 @@ class PostingActivity : AppCompatActivity(), OnMapReadyCallback {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        binding.galleryButton.setOnClickListener { startGallery() }
-        binding.cameraButton.setOnClickListener { startCamera() }
-        binding.uploadButton.setOnClickListener { uploadImage() }
-        binding.locationCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                getMyLastLocation()
+        binding.apply {
+            galleryButton.setOnClickListener { startGallery() }
+            cameraButton.setOnClickListener { startCamera() }
+            uploadButton.setOnClickListener { uploadImage() }
+            locationCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    getMyLastLocation()
+                }
             }
         }
+
+
     }
 
     private val requestPermissionLauncher = registerForActivityResult(

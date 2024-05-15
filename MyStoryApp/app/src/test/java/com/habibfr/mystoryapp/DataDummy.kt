@@ -1,6 +1,6 @@
 package com.habibfr.mystoryapp
 
-import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
+import com.habibfr.mystoryapp.data.entity.ListStoryItem
 
 object DataDummy {
     fun generateDummyStoryResponse(): List<ListStoryItem> {
