@@ -7,7 +7,7 @@ import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
 import com.habibfr.mystoryapp.data.remote.retrofit.ApiService
 import kotlinx.coroutines.flow.first
 
-class QuotePagingSource(
+class StoryPagingSource(
     private val userPreference: UserPreference,
     private val apiService: ApiService
 ) : PagingSource<Int, ListStoryItem>() {

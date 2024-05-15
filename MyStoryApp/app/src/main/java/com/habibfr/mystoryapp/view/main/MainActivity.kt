@@ -3,14 +3,14 @@ package com.habibfr.mystoryapp.view.main
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.isVisible
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.habibfr.mystoryapp.R
@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         ViewModelFactory.getInstance(this)
     }
     private val storyAdapter = StoryAdapter()
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.top_app_bar, menu)
@@ -73,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         binding.rvStory.layoutManager = LinearLayoutManager(this)
 
         viewModel.getSession().observe(this) { user ->
-            Log.d("TOKEN", user.token)
 
             if (!user.isLogin) {
                 startActivity(Intent(this, WelcomeActivity::class.java))
@@ -81,8 +81,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.progressBar.visibility = View.VISIBLE
         getStory()
+
+        storyAdapter.addLoadStateListener { loadState ->
+            binding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+            binding.viewStubError.isVisible = loadState.source.refresh is LoadState.Error
+        }
+
+
         binding.fabAdd.setOnClickListener {
             val intent = Intent(this@MainActivity, PostingActivity::class.java)
             startActivity(intent)
@@ -92,13 +98,13 @@ class MainActivity : AppCompatActivity() {
     private fun getStory() {
 
         binding.rvStory.adapter = storyAdapter.withLoadStateFooter(
-            footer = LoadingStateAdapter {
+            LoadingStateAdapter {
                 storyAdapter.retry()
             }
         )
 
         viewModel.story.observe(this) {
-            binding.progressBar.visibility = View.GONE
+//            binding.progressBar.visibility = View.GONE
             storyAdapter.submitData(lifecycle, it)
         }
 

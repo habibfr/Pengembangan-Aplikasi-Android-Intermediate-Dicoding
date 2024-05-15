@@ -9,25 +9,29 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_story"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         tools:listitem="@layout/item_story" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center|center_vertical" />
+        android:layout_gravity="center" />
+
+    <ViewStub
+        android:id="@+id/viewStubError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/item_error" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:foregroundGravity="bottom"
         app:fabSize="normal"
-        app:layout_anchor="@id/rv_story"
+        app:layout_anchor="@+id/rv_story"
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_baseline_add_24" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

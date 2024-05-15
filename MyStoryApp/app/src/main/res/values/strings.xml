@@ -35,4 +35,6 @@
     <string name="maps">Maps</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="try_again">Try Again</string>
+    <string name="msg_error">Opss, something wrong..</string>
+    <string name="msg_try_again">Try again!</string>
 </resources>

@@ -16,13 +16,12 @@ import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
 import com.habibfr.mystoryapp.data.remote.response.LoginResult
 import com.habibfr.mystoryapp.data.remote.response.RegisterResponse
 import com.habibfr.mystoryapp.data.remote.retrofit.ApiService
-import com.habibfr.mystoryapp.paging.QuotePagingSource
+import com.habibfr.mystoryapp.paging.StoryPagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.HttpException
-import retrofit2.http.Part
 
 class UserRepository private constructor(
     private val userPreference: UserPreference,
@@ -91,7 +90,7 @@ class UserRepository private constructor(
                 pageSize = 5
             ),
             pagingSourceFactory = {
-                QuotePagingSource(userPreference, apiService)
+                StoryPagingSource(userPreference, apiService)
             }
         ).liveData
     }

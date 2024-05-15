@@ -34,4 +34,6 @@
     <string name="empty_text">NO DATA</string>
     <string name="maps">Peta</string>
     <string name="try_again">Try Again</string>
+    <string name="msg_error">Opss, something wrong..</string>
+    <string name="msg_try_again">Try again!</string>
 </resources>
