@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.habibfr.mystoryapp.data.Result
 import com.habibfr.mystoryapp.data.UserRepository
-import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
+import com.habibfr.mystoryapp.data.entity.ListStoryItem
 import kotlinx.coroutines.launch
 
 class MapsViewModel(private val repository: UserRepository) : ViewModel() {

@@ -6,7 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
+import com.habibfr.mystoryapp.data.entity.ListStoryItem
 import com.habibfr.mystoryapp.databinding.ItemStoryBinding
 
 

@@ -2,21 +2,22 @@ package com.habibfr.mystoryapp.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
 import com.google.gson.Gson
+import com.habibfr.mystoryapp.data.database.StoryDatabase
+import com.habibfr.mystoryapp.data.entity.ListStoryItem
 import com.habibfr.mystoryapp.data.pref.UserModel
 import com.habibfr.mystoryapp.data.pref.UserPreference
 import com.habibfr.mystoryapp.data.remote.response.DetailStoryResponse
 import com.habibfr.mystoryapp.data.remote.response.ErrorResponse
 import com.habibfr.mystoryapp.data.remote.response.FileUploadResponse
-import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
 import com.habibfr.mystoryapp.data.remote.response.LoginResult
 import com.habibfr.mystoryapp.data.remote.response.RegisterResponse
 import com.habibfr.mystoryapp.data.remote.retrofit.ApiService
-import com.habibfr.mystoryapp.paging.StoryPagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import okhttp3.MultipartBody
@@ -26,6 +27,7 @@ import retrofit2.HttpException
 class UserRepository private constructor(
     private val userPreference: UserPreference,
     private val apiService: ApiService,
+    private val storyDatabase: StoryDatabase
 ) {
 
     private val _registerStatus = MutableLiveData<Result<RegisterResponse>>()
@@ -33,9 +35,6 @@ class UserRepository private constructor(
 
     private val _dataUser = MutableLiveData<Result<LoginResult>>()
     val dataUser: LiveData<Result<LoginResult>> = _dataUser
-
-//    private val _story = MutableLiveData<Result<List<ListStoryItem>>>()
-//    val story: LiveData<Result<List<ListStoryItem>>> = _story
 
     private val _storyLocation = MutableLiveData<Result<List<ListStoryItem>>>()
     val storyLocation: LiveData<Result<List<ListStoryItem>>> = _storyLocation
@@ -73,44 +72,18 @@ class UserRepository private constructor(
     }
 
     fun getStory(): LiveData<PagingData<ListStoryItem>> {
-//
-//        try {
-//            val response =
-//                apiService.getStories("Bearer ${userPreference.getSession().first().token}")
-//            _story.value = Result.Success(response.listStory)
-//        } catch (e: HttpException) {
-//            val jsonInString = e.response()?.errorBody()?.string()
-//            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
-//            val errorMessage = errorBody.message
-//            _story.value = Result.Error(errorMessage ?: "An error occurred")
-//        }
-
+        @OptIn(ExperimentalPagingApi::class)
         return Pager(
             config = PagingConfig(
                 pageSize = 5
             ),
+            remoteMediator = StoryRemoteMediator(storyDatabase, apiService, userPreference),
             pagingSourceFactory = {
-                StoryPagingSource(userPreference, apiService)
+//                QuotePagingSource(apiService)
+                storyDatabase.storyDao().getAllStory()
             }
         ).liveData
     }
-
-//    suspend fun getStory() {
-//
-//        _story.value = Result.Loading
-//        try {
-//            val response =
-//                apiService.getStories("Bearer ${userPreference.getSession().first().token}")
-//            _story.value = Result.Success(response.listStory)
-//        } catch (e: HttpException) {
-//            val jsonInString = e.response()?.errorBody()?.string()
-//            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
-//            val errorMessage = errorBody.message
-//            _story.value = Result.Error(errorMessage ?: "An error occurred")
-//        }
-//
-//    }
-
 
     suspend fun getStoryWithLocation() {
         _storyLocation.value = Result.Loading
@@ -182,10 +155,11 @@ class UserRepository private constructor(
         private var instance: UserRepository? = null
         fun getInstance(
             userPreference: UserPreference,
-            apiService: ApiService
+            apiService: ApiService,
+            database: StoryDatabase
         ): UserRepository =
             instance ?: synchronized(this) {
-                instance ?: UserRepository(userPreference, apiService)
+                instance ?: UserRepository(userPreference, apiService, database)
             }.also { instance = it }
     }
 }

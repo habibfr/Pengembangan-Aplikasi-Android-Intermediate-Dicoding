@@ -2,7 +2,6 @@ package com.habibfr.mystoryapp.data.remote.retrofit
 
 import com.habibfr.mystoryapp.data.remote.response.DetailStoryResponse
 import com.habibfr.mystoryapp.data.remote.response.FileUploadResponse
-import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
 import com.habibfr.mystoryapp.data.remote.response.LoginResponse
 import com.habibfr.mystoryapp.data.remote.response.RegisterResponse
 import com.habibfr.mystoryapp.data.remote.response.StoryResponse

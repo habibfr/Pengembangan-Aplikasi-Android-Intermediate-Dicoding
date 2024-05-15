@@ -16,7 +16,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.habibfr.mystoryapp.R
 import com.habibfr.mystoryapp.data.Result
-import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
+import com.habibfr.mystoryapp.data.entity.ListStoryItem
 import com.habibfr.mystoryapp.databinding.ActivityMapsBinding
 import com.habibfr.mystoryapp.view.ViewModelFactory
 

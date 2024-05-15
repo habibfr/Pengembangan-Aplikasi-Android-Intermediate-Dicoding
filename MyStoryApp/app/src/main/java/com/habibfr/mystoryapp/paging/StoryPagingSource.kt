@@ -2,8 +2,8 @@ package com.habibfr.mystoryapp.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.habibfr.mystoryapp.data.entity.ListStoryItem
 import com.habibfr.mystoryapp.data.pref.UserPreference
-import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
 import com.habibfr.mystoryapp.data.remote.retrofit.ApiService
 import kotlinx.coroutines.flow.first
 

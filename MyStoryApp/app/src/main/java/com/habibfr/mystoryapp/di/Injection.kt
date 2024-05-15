@@ -2,6 +2,7 @@ package com.habibfr.mystoryapp.di
 
 import android.content.Context
 import com.habibfr.mystoryapp.data.UserRepository
+import com.habibfr.mystoryapp.data.database.StoryDatabase
 import com.habibfr.mystoryapp.data.pref.UserPreference
 import com.habibfr.mystoryapp.data.pref.dataStore
 import com.habibfr.mystoryapp.data.remote.retrofit.ApiConfig
@@ -12,7 +13,8 @@ object Injection {
     fun provideRepository(context: Context): UserRepository {
         val pref = UserPreference.getInstance(context.dataStore)
         val apiService = ApiConfig.getApiService()
+        val database = StoryDatabase.getDatabase(context)
 
-        return UserRepository.getInstance(pref, apiService)
+        return UserRepository.getInstance(pref, apiService, database)
     }
 }

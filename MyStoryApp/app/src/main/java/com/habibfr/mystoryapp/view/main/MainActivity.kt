@@ -14,7 +14,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.habibfr.mystoryapp.R
-import com.habibfr.mystoryapp.data.remote.response.ListStoryItem
+import com.habibfr.mystoryapp.data.entity.ListStoryItem
 import com.habibfr.mystoryapp.databinding.ActivityMainBinding
 import com.habibfr.mystoryapp.paging.LoadingStateAdapter
 import com.habibfr.mystoryapp.view.ViewModelFactory
