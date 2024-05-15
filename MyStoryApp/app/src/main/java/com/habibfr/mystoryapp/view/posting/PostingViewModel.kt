@@ -13,9 +13,9 @@ import okhttp3.RequestBody
 class PostingViewModel(private val repository: UserRepository) : ViewModel() {
     val postStatus: LiveData<Result<FileUploadResponse>> = repository.postStatus
 
-    fun postStory(file: MultipartBody.Part, description: RequestBody) {
+    fun postStory(file: MultipartBody.Part, description: RequestBody, lat: Double = 0.0, lon: Double = 0.0) {
         viewModelScope.launch {
-            repository.postStory(file, description)
+            repository.postStory(file, description, lat, lon)
         }
     }
 }

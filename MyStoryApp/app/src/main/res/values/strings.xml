@@ -37,4 +37,7 @@
     <string name="try_again">Try Again</string>
     <string name="msg_error">Opss, something wrong..</string>
     <string name="msg_try_again">Try again!</string>
+    <string name="use_current_location">Use current location</string>
+    <string name="location_is_not_found">Location is not found. Try Again</string>
+    <string name="no_location_access_granted">No location access granted. Try Again</string>
 </resources>

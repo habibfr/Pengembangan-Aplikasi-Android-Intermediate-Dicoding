@@ -1,6 +1,8 @@
 package com.habibfr.mystoryapp.view.posting
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -9,6 +11,11 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.habibfr.mystoryapp.R
 import com.habibfr.mystoryapp.data.Result
 import com.habibfr.mystoryapp.databinding.ActivityPostingBinding
@@ -19,13 +26,17 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class PostingActivity : AppCompatActivity() {
+class PostingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivityPostingBinding
     private var currentImageUri: Uri? = null
     private val postingViewModel by viewModels<PostingViewModel> {
         ViewModelFactory.getInstance(this)
     }
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var lat: Double = 0.0
+    private var lon: Double = 0.0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +44,71 @@ class PostingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         binding.galleryButton.setOnClickListener { startGallery() }
         binding.cameraButton.setOnClickListener { startCamera() }
         binding.uploadButton.setOnClickListener { uploadImage() }
+        binding.locationCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                getMyLastLocation()
+            }
+        }
+    }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] ?: false -> {
+                getMyLastLocation()
+            }
+
+            permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
+                getMyLastLocation()
+            }
+
+            else -> {
+                Toast.makeText(
+                    this@PostingActivity,
+                    getString(R.string.no_location_access_granted),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun checkPermission(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this, permission
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun getMyLastLocation() {
+        if (checkPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) && checkPermission(
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    lat = location.latitude
+                    lon = location.longitude
+                } else {
+                    Toast.makeText(
+                        this@PostingActivity,
+                        getString(R.string.location_is_not_found),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        } else {
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
     }
 
     private fun startGallery() {
@@ -84,11 +155,9 @@ class PostingActivity : AppCompatActivity() {
             val requestBody = description.toRequestBody("text/plain".toMediaType())
             val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
             val multipartBody = MultipartBody.Part.createFormData(
-                "photo",
-                imageFile.name,
-                requestImageFile
+                "photo", imageFile.name, requestImageFile
             )
-            postingViewModel.postStory(multipartBody, requestBody)
+            postingViewModel.postStory(multipartBody, requestBody, lat, lon)
 
             postingViewModel.postStatus.observe(this) { result ->
                 if (result != null) {
@@ -128,6 +197,10 @@ class PostingActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun onMapReady(gMap: GoogleMap) {
+        getMyLastLocation()
     }
 
 }

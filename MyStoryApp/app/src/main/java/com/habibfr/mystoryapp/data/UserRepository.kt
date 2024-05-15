@@ -119,14 +119,16 @@ class UserRepository private constructor(
         }
     }
 
-    suspend fun postStory(file: MultipartBody.Part, description: RequestBody) {
+    suspend fun postStory(file: MultipartBody.Part, description: RequestBody, lat: Double = 0.0, lon: Double = 0.0) {
         _postStatus.value = Result.Loading
         try {
             val response =
                 apiService.uploadStory(
                     "Bearer ${userPreference.getSession().first().token}",
                     file,
-                    description
+                    description,
+                    lat,
+                    lon
                 )
             _postStatus.value = Result.Success(response)
         } catch (e: HttpException) {
